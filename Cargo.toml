@@ -1,0 +1,17 @@
+[package]
+name = "nit"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = { version = "4.5.53", features = ["derive"] }
+dirs = "6.0.0"
+ltrait = "1.5.0"
+ltrait-extra = "0.4.1"
+ltrait-scorer-nucleo = "0.5.0"
+ltrait-sorter-frecency = "0.3.0"
+ltrait-ui-tui = "0.6.0"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.145"
+tokio = { version = "1.48.0", features = ["full"] }
+toml = "0.9.8"
