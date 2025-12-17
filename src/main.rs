@@ -24,6 +24,7 @@ use ltrait_sorter_frecency::Frecency;
 /// name = "test" # optional
 /// uri = "github:NixOS/templates"
 /// templates = ["default"] # optional. if doesn't exit, import all of templates
+/// execludes = ["..."] # optional
 /// ```
 struct Args {
     /// Clear and re-collect the cache(if you changed config, you have to run with re-cache)
@@ -146,6 +147,7 @@ struct TemplateConfig {
     name: Option<String>,
     uri: String,
     templates: Option<Vec<String>>,
+    execludes: Option<Vec<String>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -173,6 +175,12 @@ async fn load_cache(re_cache: bool) -> Result<Vec<Template>> {
                 data = data
                     .into_iter()
                     .filter(|value| fil.contains(&value.name))
+                    .collect();
+            }
+            if let Some(fil) = flake.execludes {
+                data = data
+                    .into_iter()
+                    .filter(|value| !fil.contains(&value.name))
                     .collect();
             }
             if let Some(name) = flake.name {
