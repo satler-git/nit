@@ -172,16 +172,10 @@ async fn load_cache(re_cache: bool) -> Result<Vec<Template>> {
         for flake in config.template {
             let mut data = load_flake(&flake.uri).await?;
             if let Some(fil) = flake.templates {
-                data = data
-                    .into_iter()
-                    .filter(|value| fil.contains(&value.name))
-                    .collect();
+                data.retain(|value| fil.contains(&value.name));
             }
             if let Some(fil) = flake.execludes {
-                data = data
-                    .into_iter()
-                    .filter(|value| !fil.contains(&value.name))
-                    .collect();
+                data.retain(|value| !fil.contains(&value.name));
             }
             if let Some(name) = flake.name {
                 for i in data.iter_mut() {
@@ -194,19 +188,18 @@ async fn load_cache(re_cache: bool) -> Result<Vec<Template>> {
         let cache = Cache { data: res.clone() };
 
         {
-            if let Some(parent) = cache_path.parent() {
-                if !parent.as_os_str().is_empty() {
+            if let Some(parent) = cache_path.parent()
+                && !parent.as_os_str().is_empty() {
                     tokio::fs::create_dir_all(parent).await?;
                 }
-            }
         }
 
         tokio::fs::write(&cache_path, serde_json::to_string(&cache)?).await?;
 
-        return Ok(res);
+        Ok(res)
     } else {
         let data: Cache = serde_json::from_str(&tokio::fs::read_to_string(&cache_path).await?)?;
-        return Ok(data.data);
+        Ok(data.data)
     }
 }
 
