@@ -189,9 +189,10 @@ async fn load_cache(re_cache: bool) -> Result<Vec<Template>> {
 
         {
             if let Some(parent) = cache_path.parent()
-                && !parent.as_os_str().is_empty() {
-                    tokio::fs::create_dir_all(parent).await?;
-                }
+                && !parent.as_os_str().is_empty()
+            {
+                tokio::fs::create_dir_all(parent).await?;
+            }
         }
 
         tokio::fs::write(&cache_path, serde_json::to_string(&cache)?).await?;
